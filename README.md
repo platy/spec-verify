@@ -34,4 +34,5 @@ A **oneOf** statement within an assertion body collects several provide or sub-a
 them should succeed. If one succeeds and the rest fail the oneOf completes successfully. If all fail, the assertion 
 statement fails, including the sub-failures. If more than one succeed, the assertion statement fails.
 
-A **sub-assertion statement body** may not have parameters,   
+A **sub-assertion statement body** may not have parameters, and may not appear within if-statements or for-statements,
+they may appear inside oneOf statements.
