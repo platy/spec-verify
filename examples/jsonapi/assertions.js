@@ -4,18 +4,16 @@ assertion("A JSON object **MUST** be at the root of every JSON API response cont
     assert(document.isObject() && !document.isArray());
 });
 
-assertion("A document **MUST** contain either primary data or an array of [error objects](#errors).", function(document){
-    oneOf(
-        assertion('Primary data **MUST** appear under a top-level key named `"data"`.', function() {
-            assert(document.data !== undefined);
-            provide('primaryData', document.data);
-        }),
-        assertion('Error objects **MUST** appear under a top-level key named `"errors"`.', function() {
-            assert(document.errors !== undefined);
-            provide('errors', document.errors);
-        })
-    )
-});
+assertion("A document **MUST** contain either primary data or an array of [error objects](#errors).")
+    .case('Primary data **MUST** appear under a top-level key named `"data"`.', function() {
+        assert(document.data !== undefined);
+        provide('primaryData', document.data);
+    })
+    .case('Error objects **MUST** appear under a top-level key named `"errors"`.', function() {
+        assert(document.errors !== undefined);
+        provide('errors', document.errors);
+    });
+
 
 assertion("Primary data **MUST** be either a single resource object, an array of resource objects, or a value representing a resource relationship.", function(primaryData){
     if(Object.isArray(primaryData)) {

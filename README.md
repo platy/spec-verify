@@ -30,9 +30,15 @@ the test-entity stack.
 A **provide statement** within an assertion body offers a new test entity (encountered while asserting) to the 
 test-entity stack. It's class is used to find which assertion bodies will be applied to it. 
 
-A **oneOf** statement within an assertion body collects several provide or sub-assertion statements where exactly one of 
+A **oneOf** statement within an assertion body collects several provide ---or sub-assertion--- statements where exactly one of 
 them should succeed. If one succeeds and the rest fail the oneOf completes successfully. If all fail, the assertion 
 statement fails, including the sub-failures. If more than one succeed, the assertion statement fails.
 
 A **sub-assertion statement body** may not have parameters, and may not appear within if-statements or for-statements,
 they may appear inside oneOf statements.
+
+
+## Todo
+
+* Use [esprima](https://www.npmjs.com/package/esprima) and an improved spec to make a validator for SpecVerify assertion 
+files.
