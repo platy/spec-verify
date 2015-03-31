@@ -38,21 +38,21 @@ assertion("If any of these members appears in the top-level of a response, their
 });
 
 assertion('A resource object **MUST** contain at least the following top-level members:\
-\
-* `"id"`\
-* `"type"`\
-\
-Exception: The `id` member is not required when the resource object originates at\
-the client and represents a new resource to be created on the server.', function(resourceObject){
+\n\
+\n* `"id"`\
+\n* `"type"`\
+\n\
+\nException: The `id` member is not required when the resource object originates at\
+\nthe client and represents a new resource to be created on the server.', function(resourceObject){
     assert(resourceObject.hasOwnProperty('type'));
 }, function(response, resourceObject){
     assert(resourceObject.hasOwnProperty('id'));
 });
 
 assertion('In addition, a resource object **MAY** contain any of these top-level members:\
-\
-* `"links"`: a "links object", providing information about a resource\'s relationships (described below).\
-* `"meta"`: non-standard meta-information about a resource that can not berepresented as an attribute or relationship.', function(resourceObject){
+\n\
+\n* `"links"`: a "links object", providing information about a resource\'s relationships (described below).\
+\n* `"meta"`: non-standard meta-information about a resource that can not berepresented as an attribute or relationship.', function(resourceObject){
     if(resourceObject.hasOwnProperty('links'))
         provide('links', resourceObject.links);
     if(resourceObject.hasOwnProperty('meta'))

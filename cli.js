@@ -4,14 +4,11 @@ require('./assertion-loader.js')(process.argv[2], function(as){
     as.forEach(function(a){
         console.log('  ' + a.toString());
     });
-    var allAssertions = [];
+    console.log("Total assertions");
     as.forEach(function(r){
-        allAssertions.push(r.description);
-        if(r.cases)
-            Array.prototype.push.apply(allAssertions, r.cases)
-    });
-    console.log(allAssertions.length + " total assertions");
-    allAssertions.forEach(function(a){
-        console.log('  ' + a);
+        console.log('  ' + r.description);
+        if(r.cases) r.cases.forEach(function(rcase){
+            console.log('    ' + rcase);
+        })
     });
 });

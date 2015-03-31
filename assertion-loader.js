@@ -28,7 +28,7 @@ module.exports = function(filepath, callback) {
 
     fs.readFile(filepath, function (err, data) {
         if (err) throw err;
-        vm.runInContext(data, spectestApi);
+        vm.runInContext(data, spectestApi, {filename: filepath, showErrors: true});
         callback(rootAssertions);
     });
 };
