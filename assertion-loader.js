@@ -1,34 +1,18 @@
+/*
+Does node-side loading of assertion files
+ */
 var fs = require('fs'),
     vm = require('vm');
+var AssertionContext = require('./assertion-context.js');
 
-function Assertion(description, bodies) {
-    this.description = description;
-    this.bodies = bodies;
-}
-
-Assertion.prototype.case = function(description) {
-    this.cases = this.cases || [];
-    this.cases.push(new Assertion(description, Array.prototype.slice.call(arguments, 1)));
-    return this;
-};
-
-Assertion.prototype.toString = function() {
-    return this.description;
-};
 
 module.exports = function(filepath, callback) {
-    var rootAssertions = [];
-    var spectestApi = vm.createContext({
-        assertion: function (description) {
-            var a = new Assertion(description, Array.prototype.slice.call(arguments, 1));
-            rootAssertions.push(a);
-            return a;
-        }
-    });
+    var assertionContext = AssertionContext();
+    var spectestApi = vm.createContext(assertionContext.context);
 
     fs.readFile(filepath, function (err, data) {
         if (err) throw err;
         vm.runInContext(data, spectestApi, {filename: filepath, showErrors: true});
-        callback(rootAssertions);
+        callback(assertionContext.rootAssertions);
     });
 };
