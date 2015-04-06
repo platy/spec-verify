@@ -1,19 +1,18 @@
 
-function Assertion(description, bodies) {
-    this.description = description;
-    this.bodies = bodies;
+class Assertion {
+    constructor(description, bodies) {
+        this.description = description;
+        this.bodies = bodies;
+    }
+    hasCase(description) {
+        this.cases = this.cases || [];
+        this.cases.push(new Assertion(description, Array.prototype.slice.call(arguments, 1)));
+        return this;
+    }
+    toString() {
+        return this.description;
+    }
 }
-
-Assertion.prototype.case = function(description) {
-    this.cases = this.cases || [];
-    this.cases.push(new Assertion(description, Array.prototype.slice.call(arguments, 1)));
-    return this;
-};
-
-Assertion.prototype.toString = function() {
-    return this.description;
-};
-
 module.exports = function () {
     var t = {
         rootAssertions: []

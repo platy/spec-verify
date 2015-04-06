@@ -1,3 +1,4 @@
+require("babel/register");
 
 require('./assertion-loader.js')(process.argv[2], function(as){
     console.log(as.length + " root assertions");
