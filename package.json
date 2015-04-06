@@ -2,9 +2,10 @@
   "name": "spec-verify",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
-    "babel": "latest"
+    "babel": "latest",
+    "es6-module-loader": "^0.16.3",
+    "traceur": "0.0.87"
   }
 }

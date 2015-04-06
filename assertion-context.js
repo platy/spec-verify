@@ -13,16 +13,17 @@ class Assertion {
         return this.description;
     }
 }
-module.exports = function () {
-    var t = {
-        rootAssertions: []
-    };
-    t.context = {
-        assertion: function (description) {
-            var a = new Assertion(description, Array.prototype.slice.call(arguments, 1));
-            t.rootAssertions.push(a);
-            return a;
+
+export function contextGenerator() {
+    var context = {
+        rootAssertions: [],
+        context: {
+            assertion(description) {
+                var a = new Assertion(description, Array.prototype.slice.call(arguments, 1));
+                context.rootAssertions.push(a);
+                return a;
+            }
         }
     };
-    return t;
-};
+    return context;
+}
