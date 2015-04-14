@@ -2,10 +2,14 @@
   "name": "spec-verify",
   "version": "0.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "test": "mocha --compilers js:babel/register examples/jsonapi/test.js",
+    "try": "babel-node --stage 0 cli.js examples/jsonapi/assertions.js"
+  },
   "dependencies": {
-    "babel": "latest",
-    "es6-module-loader": "^0.16.3",
-    "traceur": "0.0.87"
+  },
+  "devDependencies": {
+    "babel": "^5.1.9",
+    "mocha": "^2.2.4"
   }
 }
