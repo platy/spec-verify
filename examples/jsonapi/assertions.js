@@ -1,4 +1,4 @@
-
+// Main entry point : document - a json document
 
 assertion("A JSON object **MUST** be at the root of every JSON API response containing data.", function(document){
     assert(document.isObject() && !document.isArray());

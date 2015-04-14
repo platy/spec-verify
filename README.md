@@ -2,8 +2,16 @@
 
 ## Test-entity stack
 
-To handle multiple entity validation and nesting of entities SpecVerify uses a stack of entities under stack and entity
-classes.
+To handle multiple entity validation and nesting of entities SpecVerify uses a stack of test-entities.
+
+For each state of the test entity stack, each assertion body is check for a match. An assertion body matches the stack 
+if the last entity name on the stack matches the last entity name of the body's parameters and the other body arguments 
+match some other elements of the stack (these must be in order but may be sparse).
+
+## Result tree
+
+Results are expressed raw as a tree of all the states of the test-entity stack, with each node attached to the 
+assertions it matched and the results of those assertions.
 
 ## Assertion file
 
