@@ -16,7 +16,7 @@ describe("JSONapi assertions", function(){
         result.root.should.have.lengthOf(2);
         var assertion1result = result.root[0];
         assertion1result.description.should.equal("A JSON object **MUST** be at the root of every JSON API response containing data.");
-        assertion1result.passed.should.be.ok();
+        assertion1result.passed.should.be.ok;
     });
 
 
@@ -25,6 +25,6 @@ describe("JSONapi assertions", function(){
         result.root.should.have.lengthOf(2);
         var assertion1result = result.root[0];
         assertion1result.description.should.equal("A JSON object **MUST** be at the root of every JSON API response containing data.");
-        assertion1result.passed.should.not.be.ok();
+        assertion1result.passed.should.not.be.ok;
     });
 });
