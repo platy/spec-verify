@@ -7,12 +7,12 @@ assertion("A JSON object **MUST** be at the root of every JSON API response cont
 });
 
 assertion("A document **MUST** contain either primary data or an array of [error objects](#errors).")
-    .hasCase('Primary data **MUST** appear under a top-level key named `"data"`.', function() {
-        assert(document.data !== undefined);
+    .hasCase('Primary data **MUST** appear under a top-level key named `"data"`.', function(document) {
+        document.data.should.be.ok;
         provide('primaryData', document.data);
     })
-    .hasCase('Error objects **MUST** appear under a top-level key named `"errors"`.', function() {
-        assert(document.errors !== undefined);
+    .hasCase('Error objects **MUST** appear under a top-level key named `"errors"`.', function(document) {
+        document.errors.should.be.ok;
         provide('errors', document.errors);
     });
 

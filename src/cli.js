@@ -1,4 +1,5 @@
 import {load} from './assertion-loader';
+import {run} from './assertion-runner';
 
 load(process.argv[2], function (as) {
     console.log(as.length + " root assertions");
@@ -12,4 +13,11 @@ load(process.argv[2], function (as) {
             console.log('    ' + rcase);
         })
     });
+
+    var result = run(as, ['document', { data: {} }]);
+    result.failingChildren.forEach(failure => {
+        console.log(`FAILURE: ${failure.description}
+        ${failure.failureError}`);
+    });
+    console.log(result.summary);
 });

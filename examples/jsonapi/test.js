@@ -15,22 +15,22 @@ describe("JSONapi assertions", function(){
 
     it("is valid for an empty object", function() {
         var result = run(assertions, ['document', {}]);
-        result.root.should.have.lengthOf(2);
+        result.root.should.have.lengthOf(3);
         result.root[0].description.should.equal("A JSON object **MUST** be at the root of every JSON API response containing data.");
         result.root[0].passed.should.be.ok;
-        result.root[1].description.should.equal("If any of these members appears in the top-level of a response, their values **MUST** comply with this specification.");
-        result.root[1].passed.should.be.ok;
+        result.root[2].description.should.equal("If any of these members appears in the top-level of a response, their values **MUST** comply with this specification.");
+        result.root[2].passed.should.be.ok;
         result.passed.should.be.ok;
     });
 
 
     it("is not valid for an empty list", function() {
         var result = run(assertions, ['document', []]);
-        result.root.should.have.lengthOf(2);
+        result.root.should.have.lengthOf(3);
         result.root[0].description.should.equal("A JSON object **MUST** be at the root of every JSON API response containing data.");
         result.root[0].passed.should.not.be.ok;
-        result.root[1].description.should.equal("If any of these members appears in the top-level of a response, their values **MUST** comply with this specification.");
-        result.root[1].passed.should.be.ok;
+        result.root[2].description.should.equal("If any of these members appears in the top-level of a response, their values **MUST** comply with this specification.");
+        result.root[2].passed.should.be.ok;
         result.passed.should.not.be.ok;
     });
 });

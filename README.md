@@ -18,7 +18,8 @@ assertions it matched and the results of those assertions.
 An **assertion file** consists of a sequence of assertion statements, the ordering represents the last execution order 
 preference. It has access to the console and require members of the global object (if available). 
 
-An **assertion statement** has a string description and one or more functions representing assertion bodies.
+An **assertion statement** has a string description and either a function representing an assertion body or multiple 
+hasCase sub-assertions.
 
 An **assertion description** should match a statement from a spec file, the match MAY be whitespace insensitive if the 
 spec parser can handle that.
@@ -31,6 +32,9 @@ when the preceding parameter names match test entities down the stack in the sam
 Every **assertion body** SHOULD contain either some kind of assertion or a provide statement. These statements MAY be 
 contained within conditional statements and therefore an applied assertion body will not necessarily always use one of 
 these statements.
+
+A **hasCase sub-assertion** is evaluated in the same way as an assertion statement, but for the parent assertion 
+statement to pass, exactly one hasCase statement must pass. Assertions bodies of cases must have the same parameters.
 
 If an **assertion** fails, the assertion statement containing it fails as does every assertion lower than it in 
 the test-entity stack.

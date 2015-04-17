@@ -1,11 +1,35 @@
 
 class ResultNode {
-    constructor(assertion, passed){
+    constructor(assertion, passed, failureError){
         this.assertion= assertion;
         this.passed = passed;
+        this.failureError = failureError;
     }
     get description() {
         return this.assertion.description;
+    }
+}
+
+class CaseResultNode {
+    constructor(assertion, caseResults){
+        this.assertion= assertion;
+        this.caseResults = caseResults;
+    }
+    get description() {
+        return this.assertion.description;
+    }
+    get passingChildren() {
+        return this.caseResults.filter(child => child.passed);
+    }
+    get failingChildren() {
+        return this.caseResults.filter(child => !child.passed);
+    }
+    get passed() {
+        return this.passingChildren.length === 1;
+    }
+    get failureError() {
+        return `${this.passingChildren.length}/${this.caseResults.length} cases passed, should be one.\n` +
+                this.failingChildren.map(child => '\t\t' + child.failureError).join('\n')
     }
 }
 
@@ -18,6 +42,19 @@ class ResultRoot {
     }
     get passed() {
         return this.root.every((child) => child.passed);
+    }
+    get passingChildren() {
+        return this.root.filter(child => child.passed);
+    }
+    get failingChildren() {
+        return this.root.filter(child => !child.passed);
+    }
+    get summary() {
+        if(this.passed)
+            return `${this.passingChildren.length} assertions passed`;
+        else {
+            return `${this.passingChildren.length} assertions passed, but ${this.failingChildren.length} failed`;
+        }
     }
 }
 
@@ -34,32 +71,41 @@ export function run(assertions, initialEntity) {
 
     function evaluate(stack) {
         var res = [];
+        console.log(`Running ${assertions.length} assertions`);
         assertions.forEach(a => {
-            var assertionRes = evaluateAssertion(a, stack);
+            var assertionRes = evaluateAssertionForStack(a, stack);
             if (assertionRes)
                 res.push(assertionRes);
         });
         return res;
     }
 
-    function evaluateAssertion(a, stack) {
-        var matchingBodies = a.bodies.filter(assertionBody => {
-            var bpns = getParameterNames(assertionBody);
-            return bpns[bpns.length - 1] === stack[stack.length - 1][0];
-        });
-        if (matchingBodies.length > 0) {
-            var passed = evaluateBody(matchingBodies[0], stack);
-            return new ResultNode(a, passed);
+    function evaluateAssertionForStack(a, stack) {
+        var bpns = a.parameters;
+        var topOfStack = stack[stack.length - 1];
+        if (bpns[bpns.length - 1] === topOfStack[0]) {
+            return evaluateAssertionForArguments(a, [topOfStack[1]])
         }
     }
 
-    function evaluateBody(body, stack) {
-        console.log(`About to run ${body}`);
+    function evaluateAssertionForArguments(a, args) {
+        if (a.body) {
+            return evaluateBody(a, args);
+        } else { // case assertion
+            var caseResults = a.cases.map(assertionCase => {
+                return evaluateAssertionForArguments(assertionCase, args)
+            });
+            return new CaseResultNode(a, caseResults)
+        }
+    }
+
+    function evaluateBody(a, args) {
+        console.log(`About to run ${a.body} with ${args}`);
         try {
-            body(stack[stack.length - 1][1]);
-            return true;
+            a.body.apply(null, args);
+            return new ResultNode(a, true);
         } catch(failureError) {
-            return false;
+            return new ResultNode(a, false, failureError);
         }
     }
 
