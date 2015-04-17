@@ -9,6 +9,18 @@ class ResultNode {
     }
 }
 
+class ResultRoot {
+    constructor(rootNodes){
+        this.root = rootNodes;
+    }
+    static get description() {
+        return "Result root";
+    }
+    get passed() {
+        return this.root.every((child) => child.passed);
+    }
+}
+
 function getParameterNames(func){
     var str=func.toString();
     var len = str.indexOf("(");
@@ -53,5 +65,5 @@ export function run(assertions, initialEntity) {
 
     var stack = [initialEntity];
 
-    return {root: evaluate(stack)};
+    return new ResultRoot(evaluate(stack));
 }
