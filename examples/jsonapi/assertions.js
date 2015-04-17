@@ -1,7 +1,9 @@
 // Main entry point : document - a json document
 
+require('should');
+
 assertion("A JSON object **MUST** be at the root of every JSON API response containing data.", function(document){
-    assert(document.isObject() && !document.isArray());
+    document.should.be.type('object').and.not.an.Array;
 });
 
 assertion("A document **MUST** contain either primary data or an array of [error objects](#errors).")

@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "mocha --compilers js:babel/register examples/jsonapi/test.js",
+    "testMocha": "mocha --compilers js:babel/register examples/jsonapi/test.js",
+    "test": "babel src --out-dir es5 && jasmine examples/jsonapi/test.js",
     "try": "babel-node --stage 0 cli.js examples/jsonapi/assertions.js"
   },
   "dependencies": {},
   "devDependencies": {
     "babel": "^5.1.9",
     "mocha": "^2.2.4",
-    "should": "^5.2.0"
+    "should": "^6.0.1"
   }
 }

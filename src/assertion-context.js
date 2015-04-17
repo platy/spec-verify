@@ -22,7 +22,9 @@ export function contextGenerator() {
                 var a = new Assertion(description, Array.prototype.slice.call(arguments, 1));
                 context.rootAssertions.push(a);
                 return a;
-            }
+            },
+            console: console,
+            require: require
         }
     };
     return context;

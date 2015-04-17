@@ -16,7 +16,7 @@ assertions it matched and the results of those assertions.
 ## Assertion file
 
 An **assertion file** consists of a sequence of assertion statements, the ordering represents the last execution order 
-preference.
+preference. It has access to the console and require members of the global object (if available). 
 
 An **assertion statement** has a string description and one or more functions representing assertion bodies.
 
@@ -28,11 +28,11 @@ assertion body applies to, the body is run for each test entity which matches th
 several parameters, it applies when it's last parameter matches by name the currently provided test entity class AND
 when the preceding parameter names match test entities down the stack in the same order.
 
-Every **assertion body** MUST contain either an assert or a provide statement. assert or provide statements MAY be 
+Every **assertion body** SHOULD contain either some kind of assertion or a provide statement. These statements MAY be 
 contained within conditional statements and therefore an applied assertion body will not necessarily always use one of 
 these statements.
 
-If an **assert statement** fails, the assertion statement containing it fails as does every assertion lower than it in 
+If an **assertion** fails, the assertion statement containing it fails as does every assertion lower than it in 
 the test-entity stack.
 
 A **provide statement** within an assertion body offers a new test entity (encountered while asserting) to the 

@@ -1,4 +1,6 @@
-import {load, run} from './../../api.js';
+//import {load, run} from './../../es5/api.js';
+var api = require('./../../es5/api.js');
+var load = api.load, run = api.run;
 require('should');
 
 
@@ -6,9 +8,9 @@ describe("JSONapi assertions", function(){
     var assertions = null;
     beforeEach(function(done) {
         load('./examples/jsonapi/assertions.js', function (as) {
-                assertions = as;
-                done();
-            });
+            assertions = as;
+            done();
+        });
     });
 
     it("is valid for an empty object", function() {

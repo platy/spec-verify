@@ -42,9 +42,13 @@ export function run(assertions, initialEntity) {
     }
 
     function evaluateBody(body, stack) {
-        //console.log(`About to run ${body}`);
-        //body(stack[stack.length - 1][1]);
-        return true;
+        console.log(`About to run ${body}`);
+        try {
+            body(stack[stack.length - 1][1]);
+            return true;
+        } catch(failureError) {
+            return false;
+        }
     }
 
     var stack = [initialEntity];
