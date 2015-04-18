@@ -1,8 +1,32 @@
 
-class ResultNode {
-    constructor(assertion, passed, failureError){
+class SuccessResultNode {
+    constructor(assertion, providedChildResults){
         this.assertion= assertion;
-        this.passed = passed;
+        this.thisPassed = true;
+        this.providedChildResults = providedChildResults;
+    }
+    get description() {
+        return this.assertion.description;
+    }
+    get passingChildren() {
+        return this.providedChildResults.filter(child => child.passed);
+    }
+    get failingChildren() {
+        return this.providedChildResults.filter(child => !child.passed);
+    }
+    get passed() {
+        return this.thisPassed && this.failingChildren.length === 0;
+    }
+    get failureError() {
+        return `${this.passingChildren.length}/${this.providedChildResults.length} childs passed, should be all.\n` +
+            this.failingChildren.map(child => '\t\t' + child.failureError).join('\n')
+    }
+}
+
+class FailureResultNode {
+    constructor(assertion, failureError){
+        this.assertion= assertion;
+        this.passed = false;
         this.failureError = failureError;
     }
     get description() {
@@ -58,10 +82,15 @@ class ResultRoot {
     }
 }
 
-function getParameterNames(func){
-    var str=func.toString();
-    var len = str.indexOf("(");
-    return str.substr(len+1,str.indexOf(")")-len -1).replace(/ /g,"").split(',')
+// Stack of test-entities
+class Stack {
+    constructor(stack, argumentName, argumentValue) {
+        this.head = [argumentName, argumentValue];
+        this.tail = stack;
+    }
+    with(argumentName, argumentValue) {
+        return new Stack(this, argumentName, argumentValue);
+    }
 }
 
 // Currently only a single initial entity is allowed, as otherwise an ordering would have to be provided
@@ -82,34 +111,43 @@ export function run(assertions, initialEntity) {
 
     function evaluateAssertionForStack(a, stack) {
         var bpns = a.parameters;
-        var topOfStack = stack[stack.length - 1];
+        var topOfStack = stack.head;
         if (bpns[bpns.length - 1] === topOfStack[0]) {
             return evaluateAssertionForArguments(a, [topOfStack[1]])
         }
-    }
 
-    function evaluateAssertionForArguments(a, args) {
-        if (a.body) {
-            return evaluateBody(a, args);
-        } else { // case assertion
-            var caseResults = a.cases.map(assertionCase => {
-                return evaluateAssertionForArguments(assertionCase, args)
-            });
-            return new CaseResultNode(a, caseResults)
+        function evaluateAssertionForArguments(a, args) {
+            if (a.body) {
+                return evaluateBody(a, args);
+            } else { // case assertion
+                var caseResults = a.cases.map(assertionCase => {
+                    return evaluateAssertionForArguments(assertionCase, args)
+                });
+                return new CaseResultNode(a, caseResults)
+            }
+        }
+
+        function evaluateBody(a, args) {
+            console.log(`About to run ${a.body} with ${args}`);
+            try {
+                var providedChildren = [];
+                var bodyThis = {
+                    provides(argName, argValue) {
+                        console.log(`${argName} provided`);
+                        var resultOfProvides = evaluate(stack.with(argName, argValue));
+                        providedChildren.push([argName, argValue, resultOfProvides]);
+                    }
+                };
+                a.body.apply(bodyThis, args);
+                return new SuccessResultNode(a, providedChildren);
+            } catch(failureError) {
+                return new FailureResultNode(a, failureError);
+            }
         }
     }
 
-    function evaluateBody(a, args) {
-        console.log(`About to run ${a.body} with ${args}`);
-        try {
-            a.body.apply(null, args);
-            return new ResultNode(a, true);
-        } catch(failureError) {
-            return new ResultNode(a, false, failureError);
-        }
-    }
-
-    var stack = [initialEntity];
+    var [initialEntityName, initialEntityValue] = initialEntity;
+    var stack = new Stack(undefined, initialEntityName, initialEntityValue);
 
     return new ResultRoot(evaluate(stack));
 }

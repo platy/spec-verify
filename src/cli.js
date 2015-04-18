@@ -14,7 +14,8 @@ load(process.argv[2], function (as) {
         })
     });
 
-    var result = run(as, ['document', { data: {} }]);
+    //var result = run(as, ['document', { data: {}, meta: {}, links: {} }]);
+    var result = run(as, ['primaryData', []]);
     result.failingChildren.forEach(failure => {
         console.log(`FAILURE: ${failure.description}
         ${failure.failureError}`);

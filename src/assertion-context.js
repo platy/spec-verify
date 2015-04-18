@@ -37,11 +37,9 @@ export function contextGenerator() {
                 context.rootAssertions.push(a);
                 return a;
             },
-            provide(argName, argValue) {
-
-            },
             console: console,
-            require: require
+            require: require,
+            oneOf() {}
         }
     };
     return context;

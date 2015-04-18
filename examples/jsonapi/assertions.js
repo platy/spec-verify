@@ -9,34 +9,35 @@ assertion("A JSON object **MUST** be at the root of every JSON API response cont
 assertion("A document **MUST** contain either primary data or an array of [error objects](#errors).")
     .hasCase('Primary data **MUST** appear under a top-level key named `"data"`.', function(document) {
         document.data.should.be.ok;
-        provide('primaryData', document.data);
+        this.provides('primaryData', document.data);
     })
     .hasCase('Error objects **MUST** appear under a top-level key named `"errors"`.', function(document) {
         document.errors.should.be.ok;
-        provide('errors', document.errors);
+        this.provides('errors', document.errors);
     });
 
 
 assertion("Primary data **MUST** be either a single resource object, an array of resource objects, or a value representing a resource relationship.", function(primaryData){
-    if(Object.isArray(primaryData)) {
+    var self = this;    // TODO switch to es6 to use arrows and remove this madness
+    if(Array.isArray(primaryData)) {
         primaryData.forEach(function (resourceObject) {
-            provide('resourceObject', resourceObject);
+            self.provides('resourceObject', resourceObject);
         })
     } else {
         oneOf(
-            provide('resourceObject', primaryData),
-            provide('resourceRelationship', primaryData)
+            this.provides('resourceObject', primaryData),
+            this.provides('resourceRelationship', primaryData)
         )
     }
 });
 
 assertion("If any of these members appears in the top-level of a response, their values **MUST** comply with this specification.", function(document) {
     if(document.hasOwnProperty('meta'))
-        provide('meta', document.meta);
+        this.provides('meta', document.meta);
     if(document.hasOwnProperty('links'))
-        provide('links', document.links);
+        this.provides('links', document.links);
     if(document.hasOwnProperty('included'))
-        provide('included', document.included);
+        this.provides('included', document.included);
 });
 
 assertion('A resource object **MUST** contain at least the following top-level members:\
@@ -56,14 +57,14 @@ assertion('In addition, a resource object **MAY** contain any of these top-level
 \n* `"links"`: a "links object", providing information about a resource\'s relationships (described below).\
 \n* `"meta"`: non-standard meta-information about a resource that can not berepresented as an attribute or relationship.', function(resourceObject){
     if(resourceObject.hasOwnProperty('links'))
-        provide('links', resourceObject.links);
+        this.provides('links', resourceObject.links);
     if(resourceObject.hasOwnProperty('meta'))
-        provide('meta', resourceObject.meta);
+        this.provides('meta', resourceObject.meta);
 });
 
 assertion('A resource object **MAY** contain additional top-level members. These members represent "[attributes]" and may contain any valid JSON value.', function(resourceObject){
     for(key in resourceObject){
         if(resourceObject.hasOwnProperty(key) && !'links' === key && !'meta' === key)
-            provide('attributeValue', resourceObject[key]);
+            this.provides('attributeValue', resourceObject[key]);
     }
 });
