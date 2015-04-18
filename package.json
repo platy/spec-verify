@@ -7,7 +7,9 @@
     "test": "babel src --out-dir es5 && jasmine examples/jsonapi/test.js",
     "try": "babel-node --stage 0 src/cli.js examples/jsonapi/assertions.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "colors": "^1.0.3"
+  },
   "devDependencies": {
     "babel": "^5.1.9",
     "mocha": "^2.2.4",

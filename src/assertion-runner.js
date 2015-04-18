@@ -9,23 +9,39 @@ class SuccessResultNode {
         return this.assertion.description;
     }
     get passingChildren() {
-        return this.providedChildResults.filter(child => child.passed);
+        return this.providedChildResults.map(child => {
+            return child.results.filter(child => {
+                return child.passed
+            })
+        });
     }
     get failingChildren() {
-        return this.providedChildResults.filter(child => !child.passed);
+        return Array.prototype.concat.apply([], this.providedChildResults.map(child => {
+            return child.results.filter(child => {
+                return !child.passed
+            });
+        }));
+    }
+    get allChildren() {
+        return Array.prototype.concat.apply([], this.providedChildResults.map(child => {
+            return child.results;
+        }));
     }
     get passed() {
         return this.thisPassed && this.failingChildren.length === 0;
     }
     get failureError() {
-        return `${this.passingChildren.length}/${this.providedChildResults.length} childs passed, should be all.\n` +
-            this.failingChildren.map(child => '\t\t' + child.failureError).join('\n')
+        return `${this.passingChildren.length}/${this.providedChildResults.length} children passed, should be all.`
+    }
+    toString() {
+        return `SuccessResultNode with ${this.passingChildren.length}/${this.providedChildResults.length} children passed\n${this.description}`
     }
 }
 
 class FailureResultNode {
     constructor(assertion, failureError){
         this.assertion= assertion;
+        this.thisPassed = false;
         this.passed = false;
         this.failureError = failureError;
     }
@@ -48,12 +64,17 @@ class CaseResultNode {
     get failingChildren() {
         return this.caseResults.filter(child => !child.passed);
     }
+    get allChildren() {
+        return this.caseResults;
+    }
+    get thisPassed() {
+        return this.passed;
+    }
     get passed() {
         return this.passingChildren.length === 1;
     }
     get failureError() {
-        return `${this.passingChildren.length}/${this.caseResults.length} cases passed, should be one.\n` +
-                this.failingChildren.map(child => '\t\t' + child.failureError).join('\n')
+        return `${this.passingChildren.length}/${this.caseResults.length} cases passed, should be one.`
     }
 }
 
@@ -61,7 +82,7 @@ class ResultRoot {
     constructor(rootNodes){
         this.root = rootNodes;
     }
-    static get description() {
+    get description() {
         return "Result root";
     }
     get passed() {
@@ -72,6 +93,9 @@ class ResultRoot {
     }
     get failingChildren() {
         return this.root.filter(child => !child.passed);
+    }
+    get allChildren() {
+        return this.root;
     }
     get summary() {
         if(this.passed)
@@ -134,8 +158,8 @@ export function run(assertions, initialEntity) {
                 var bodyThis = {
                     provides(argName, argValue) {
                         console.log(`${argName} provided`);
-                        var resultOfProvides = evaluate(stack.with(argName, argValue));
-                        providedChildren.push([argName, argValue, resultOfProvides]);
+                        var results = evaluate(stack.with(argName, argValue));
+                        providedChildren.push({argName, argValue, results});
                     }
                 };
                 a.body.apply(bodyThis, args);
