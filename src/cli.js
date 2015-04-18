@@ -2,22 +2,27 @@ import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 var colors = require('colors');
 
-load(process.argv[2], function (as) {
-    console.log(as.length + " root assertions");
-    as.forEach(function (a) {
-        console.log('  ' + a.toString());
-    });
-    console.log("Total assertions");
-    as.forEach(function (r) {
-        console.log('  ' + r.description);
-        if (r.cases) r.cases.forEach(function (rcase) {
-            console.log('    ' + rcase);
-        })
-    });
+colors.setTheme({
+    passed: 'green',
+    childFailure: 'yellow',
+    selfFailure: 'red'
+});
 
-    var result = run(as, ['document', { data: {}, meta: {}, links: {} }]);
-    //var result = run(as, ['primaryData', [{type: "thing"}]]);   // TODO need a result printer to see why this is failing, it is probably something missing in the results tree
-    //var result = run(as, ['resourceObject', {type: "thing"}]);
+load(process.argv[2], function (as) {
+    //console.log(as.length + " root assertions");
+    //as.forEach(function (a) {
+    //    console.log('  ' + a.toString());
+    //});
+    //console.log("Total assertions");
+    //as.forEach(function (r) {
+    //    console.log('  ' + r.description);
+    //    if (r.cases) r.cases.forEach(function (rcase) {
+    //        console.log('    ' + rcase);
+    //    })
+    //});
+
+    //var result = run(as, ['document', { data: [{type: "thing"}, {type: "thing"}], meta: {}, links: {} }]);
+    var result = run(as, ['document', { data: {type: "thing"}, meta: {}, links: {} }]);
     result.root.forEach(result => printResult(result));
     console.log(result.summary);
 });
@@ -37,20 +42,29 @@ function printFailure(failure, depth = 0) {
 }
 
 function printResult(result, indent = '', indentedBullet = '') {
+    function printBulleted(message) {
+        console.log(indentedBullet + message.replace(/\r\n|\r|\n/g, '\n'+indent));
+    }
+    function print(message) {
+        console.log(indent + message.replace(/\r\n|\r|\n/g, '\n'+indent));
+    }
     var description = result.description.replace(/\r\n|\r|\n/g, '\n'+indent);
     if(result.passed)
-        console.log(indentedBullet + `PASSED: ${description}`.green);
+        printBulleted(`PASSED: ${description}`.passed);
     else if(result.thisPassed)  // distinguishes that it passed but a decendent failed
-        console.log(indentedBullet + `FAILURE: ${description}`.yellow);
+        printBulleted(`FAILURE: ${description}`.childFailure);
     else
-        console.log(indentedBullet + `FAILURE: ${description}`.red);
+        console.log(indentedBullet + `FAILURE: ${description}`.selfFailure);
     if (!result.thisPassed && result.failureError)
-        console.log(indent + `  ${result.failureError}`.red);
+        if(result.failureError.stack)
+            print('  ' + result.failureError.stack.selfFailure);
+        else
+            print('  ' + result.failureError.selfFailure);
     if(result.caseResults) {
         result.caseResults.forEach((child, i) => {
             printResult(child, indent + '    ', indent + ` ${i+1}) `);
         });
-    } else if(result.allChildren)
+    } else if(result.allChildren) // TODO : provided children should be grouped where the argument name and assertion are the same
         result.allChildren.forEach(child => {
             printResult(child, indent + '    ', indent + ' -- ');
         });

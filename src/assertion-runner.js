@@ -152,7 +152,7 @@ export function run(assertions, initialEntity) {
         }
 
         function evaluateBody(a, args) {
-            console.log(`About to run ${a.body} with ${args}`);
+            //console.log(`About to run ${a.body} with ${args}`);
             try {
                 var providedChildren = [];
                 var bodyThis = {
