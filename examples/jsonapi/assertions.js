@@ -24,10 +24,9 @@ assertion("Primary data **MUST** be either a single resource object, an array of
             self.provides('resourceObject', resourceObject);
         })
     } else {
-        oneOf( // TODO : rethink how to support this
-            this.provides('resourceObject', primaryData),
-            this.provides('resourceRelationship', primaryData)
-        )
+        this.providesAtLeastOne(
+            ['resourceObject', primaryData],
+            ['resourceRelationship', primaryData]);
     }
 });
 

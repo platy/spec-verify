@@ -160,6 +160,21 @@ export function run(assertions, initialEntity) {
                         console.log(`${argName} provided`);
                         var results = evaluate(stack.with(argName, argValue));
                         providedChildren.push({argName, argValue, results});
+                    },
+                    providesAtLeastOne(...args) {
+                        var optionalProvisions = args.map(([argName, argValue]) => {
+                            console.log(`${argName} optionally provided`);
+                            var results = evaluate(stack.with(argName, argValue));
+                            return {argName, argValue, results};
+                        });
+                        var passedPredicate = provision => {
+                            return provision.results.every(provision => {
+                                return provision.passed; })
+                        };
+                        if(optionalProvisions.some(passedPredicate))
+                            providedChildren.push(...optionalProvisions.filter(passedPredicate));
+                        else
+                            providedChildren.push(...optionalProvisions);
                     }
                 };
                 a.body.apply(bodyThis, args);

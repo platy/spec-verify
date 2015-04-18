@@ -38,8 +38,7 @@ export function contextGenerator() {
                 return a;
             },
             console: console,
-            require: require,
-            oneOf() {}
+            require: require
         }
     };
     return context;

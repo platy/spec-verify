@@ -64,7 +64,7 @@ function printResult(result, indent = '', indentedBullet = '') {
         result.caseResults.forEach((child, i) => {
             printResult(child, indent + '    ', indent + ` ${i+1}) `);
         });
-    } else if(result.allChildren) // TODO : provided children should be grouped where the argument name and assertion are the same
+    } else if(result.allChildren) // TODO : provided children should be grouped where the argument name and assertion are the same & provided names should be shown
         result.allChildren.forEach(child => {
             printResult(child, indent + '    ', indent + ' -- ');
         });
