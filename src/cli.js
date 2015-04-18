@@ -15,7 +15,8 @@ load(process.argv[2], function (as) {
     });
 
     //var result = run(as, ['document', { data: {}, meta: {}, links: {} }]);
-    var result = run(as, ['primaryData', []]);
+    var result = run(as, ['primaryData', [{type: "thing"}]]);   // TODO need a result printer to see why this is failing, it is probably something missing in the results tree
+    //var result = run(as, ['resourceObject', {type: "thing"}]);
     result.failingChildren.forEach(failure => {
         console.log(`FAILURE: ${failure.description}
         ${failure.failureError}`);

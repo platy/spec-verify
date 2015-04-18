@@ -24,7 +24,7 @@ assertion("Primary data **MUST** be either a single resource object, an array of
             self.provides('resourceObject', resourceObject);
         })
     } else {
-        oneOf(
+        oneOf( // TODO : rethink how to support this
             this.provides('resourceObject', primaryData),
             this.provides('resourceRelationship', primaryData)
         )
@@ -47,9 +47,9 @@ assertion('A resource object **MUST** contain at least the following top-level m
 \n\
 \nException: The `id` member is not required when the resource object originates at\
 \nthe client and represents a new resource to be created on the server.', function(resourceObject){
-    assert(resourceObject.hasOwnProperty('type'));
-}, function(response, resourceObject){
-    assert(resourceObject.hasOwnProperty('id'));
+    resourceObject.should.have.property('type');
+}, function(response, resourceObject){  // TODO I had forgotten about this use-case, add multiple body support
+    resourceObject.should.have.property('id');
 });
 
 assertion('In addition, a resource object **MAY** contain any of these top-level members:\
