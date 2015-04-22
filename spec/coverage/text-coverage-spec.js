@@ -1,6 +1,6 @@
 var should = require("should");
 
-var CoverageChecker = require('../es5/text-coverage.js');
+var CoverageChecker = require('../../es5/coverage/text-coverage.js');
 
 describe('Coverage of no assertions', function(){
     var spec = "hello world!";

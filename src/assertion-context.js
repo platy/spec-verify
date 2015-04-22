@@ -1,3 +1,5 @@
+// TODO: point to spec from assertions file
+// TODO: support multiple bodies per assertion again
 
 class Assertion {
     constructor(description, body) {

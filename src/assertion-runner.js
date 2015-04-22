@@ -1,3 +1,6 @@
+// TODO: allow providing multiple initial entities
+// TODO: match multiple elements of the stack for bodies with multiple parameters
+// TODO: report coverage of assertion statements for a run
 
 class SuccessResultNode {
     constructor(assertion, providedChildResults){

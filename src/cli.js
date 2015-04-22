@@ -1,6 +1,6 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
-import TextCoverageChecker from './text-coverage.js'
+import TextCoverageChecker from './coverage/text-coverage.js'
 var colors = require('colors');
 var fs = require('fs');
 

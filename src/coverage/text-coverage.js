@@ -1,3 +1,5 @@
+//TODO: score coverage based on keywords
+//TODO: highlight keywords which are not covered
 
 class TextCoverageResult {
     constructor(markers, body){
