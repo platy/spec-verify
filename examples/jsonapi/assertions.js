@@ -1,6 +1,7 @@
 // TODO: should be able to use some es6 with io.js
 
 // Main entry point : document - a json document
+spec = './spec.md';
 
 require('should');
 

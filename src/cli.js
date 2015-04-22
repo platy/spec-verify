@@ -35,9 +35,8 @@ if(cmd === 'try') {
         console.log(result.summary);
     });
 } else if(cmd === 'coverage'){
-    let assertionsFile = process.argv[3],
-        specFile = process.argv[4];
-    load(assertionsFile, function (as) {
+    let assertionsFile = process.argv[3];
+    load(assertionsFile, function (as, specFile) {
         fs.readFile(specFile, (err, spec) => {
             if (err) throw err;
 
