@@ -13,8 +13,8 @@ describe("JSONapi assertions", function(){
         });
     });
 
-    it("is valid for an empty object", function() {
-        var result = run(assertions, ['document', {}]);
+    it("is valid for a basic document", function() {
+        var result = run(assertions, ['document', {data:{type:''}}]);
         result.root.should.have.lengthOf(3);
         result.root[0].description.should.equal("A JSON object **MUST** be at the root of every JSON API response containing data.");
         result.root[0].passed.should.be.ok;
