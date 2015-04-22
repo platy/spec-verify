@@ -1,31 +1,65 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
+import TextCoverageChecker from './text-coverage.js'
 var colors = require('colors');
+var fs = require('fs');
 
 colors.setTheme({
     passed: 'green',
     childFailure: 'yellow',
-    selfFailure: 'red'
+    selfFailure: 'red',
+    covered: 'green'
 });
 
-load(process.argv[2], function (as) {
-    //console.log(as.length + " root assertions");
-    //as.forEach(function (a) {
-    //    console.log('  ' + a.toString());
-    //});
-    //console.log("Total assertions");
-    //as.forEach(function (r) {
-    //    console.log('  ' + r.description);
-    //    if (r.cases) r.cases.forEach(function (rcase) {
-    //        console.log('    ' + rcase);
-    //    })
-    //});
+var cmd = process.argv[2];
 
-    //var result = run(as, ['document', { data: [{type: "thing"}, {type: "thing"}], meta: {}, links: {} }]);
-    var result = run(as, ['document', { data: {type: "thing"}, meta: {}, links: {} }]);
-    result.root.forEach(result => printResult(result));
-    console.log(result.summary);
-});
+function printCoverageMarkedSpec(markedDoc) {
+    var spec = '';
+    for(var i in markedDoc) {
+        var part = markedDoc[i];
+        console.log(part);
+        if(part.covered)
+            spec = spec + part.text.covered;
+        else
+            spec = spec + part.text;
+    }
+    console.log(spec);
+}
+
+if(cmd === 'try') {
+    let assertionsFile = process.argv[3];
+    load(assertionsFile, function (as) {
+        //var result = run(as, ['document', { data: [{type: "thing"}, {type: "thing"}], meta: {}, links: {} }]);
+        var result = run(as, ['document', { data: {type: "thing"}, meta: {}, links: {} }]);
+        result.root.forEach(result => printResult(result));
+        console.log(result.summary);
+    });
+} else if(cmd === 'coverage'){
+    let assertionsFile = process.argv[3],
+        specFile = process.argv[4];
+    load(assertionsFile, function (as) {
+        fs.readFile(specFile, (err, spec) => {
+            if (err) throw err;
+
+            var allAssertions = [];
+            as.forEach(rootAssertion => {
+                allAssertions.push(rootAssertion);
+                if(rootAssertion.cases)
+                    allAssertions.push(...rootAssertion.cases);
+            });
+
+            var result = TextCoverageChecker(allAssertions, spec.toString());
+            printCoverageMarkedSpec(result.marked);
+            console.log(`${result.unmatched.length} Unmatched assertions out of ${allAssertions.length} : `);
+            result.unmatched.forEach(ua => {
+                console.log(ua.description);
+            });
+            console.log(`Coverage: ${result.coveragePercent}`);
+        })
+    })
+} else {
+    console.log(`Unknown command ${cmd}`);
+}
 
 function printFailure(failure, depth = 0) {
     var indent = '    '.repeat(depth);

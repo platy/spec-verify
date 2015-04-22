@@ -52,9 +52,8 @@ assertion('A resource object **MUST** contain at least the following top-level m
 });
 
 assertion('In addition, a resource object **MAY** contain any of these top-level members:\
-\n\
 \n* `"links"`: a "links object", providing information about a resource\'s relationships (described below).\
-\n* `"meta"`: non-standard meta-information about a resource that can not berepresented as an attribute or relationship.', function(resourceObject){
+\n* `"meta"`: non-standard meta-information about a resource that can not be represented as an attribute or relationship.', function(resourceObject){
     if(resourceObject.hasOwnProperty('links'))
         this.provides('links', resourceObject.links);
     if(resourceObject.hasOwnProperty('meta'))
