@@ -3,7 +3,7 @@ Does node-side loading of assertion files
  */
 var fs = require('fs'),
     vm = require('vm'),
-    path = require('path');
+    url = require('url');
 import {contextGenerator} from './assertion-context';
 
 
@@ -15,7 +15,7 @@ export function load(filepath, callback) {
     fs.readFile(filepath, (err, data) => {
         if (err) throw err;
         vm.runInContext(data, spectestApi, {filename: filepath, showErrors: true});
-        var specPath = path.resolve(filepath, '..', assertionContext.context.spec);
+        var specPath = url.resolve(filepath, assertionContext.context.spec);
         callback(assertionContext.rootAssertions, specPath);
     });
 }

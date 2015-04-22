@@ -115,7 +115,7 @@ class Stack {
         this.head = [argumentName, argumentValue];
         this.tail = stack;
     }
-    with(argumentName, argumentValue) {
+    cons(argumentName, argumentValue) {
         return new Stack(this, argumentName, argumentValue);
     }
 }
@@ -161,13 +161,13 @@ export function run(assertions, initialEntity) {
                 var bodyThis = {
                     provides(argName, argValue) {
                         console.log(`${argName} provided`);
-                        var results = evaluate(stack.with(argName, argValue));
+                        var results = evaluate(stack.cons(argName, argValue));
                         providedChildren.push({argName, argValue, results});
                     },
                     providesAtLeastOne(...args) {
                         var optionalProvisions = args.map(([argName, argValue]) => {
                             console.log(`${argName} optionally provided`);
-                            var results = evaluate(stack.with(argName, argValue));
+                            var results = evaluate(stack.cons(argName, argValue));
                             return {argName, argValue, results};
                         });
                         var passedPredicate = provision => {

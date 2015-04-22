@@ -1,6 +1,7 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 import TextCoverageChecker from './coverage/text-coverage.js'
+import WebGet from './fixture/web-get.js'
 var colors = require('colors');
 var fs = require('fs');
 
@@ -56,6 +57,15 @@ if(cmd === 'try') {
             console.log(`Coverage: ${result.coveragePercent}`);
         })
     })
+} else if (cmd === 'web-get') {
+    WebGet(process.argv[3], function(fixture){
+        let assertionsFile = process.argv[4];
+        load(assertionsFile, function (as) {
+            var result = run(as, fixture);
+            result.root.forEach(result => printResult(result));
+            console.log(result.summary);
+        });
+    });
 } else {
     console.log(`Unknown command ${cmd}`);
 }
