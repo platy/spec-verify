@@ -1,6 +1,5 @@
-//import {load, run} from './../../es5/api.js';
-var api = require('./../../es5/api.js');
-var load = api.load, run = api.run;
+var load = require('../../es5/assertion-loader.js').load;
+var run = require('../../es5/assertion-runner.js').run;
 require('should');
 
 
