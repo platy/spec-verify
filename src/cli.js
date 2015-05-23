@@ -1,4 +1,4 @@
-#!/usr/bin/env babel-node --stage 0 --
+#!/usr/bin/env node_modules/.bin/babel-node --stage 0 --
 
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';

@@ -3,16 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "babel src --out-dir es5 && jasmine examples/jsonapi/test.js"
+    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js"
   },
   "dependencies": {
     "colors": "^1.0.3",
     "http-request": "^0.7.0",
     "yargs": "^3.9.1"
   },
-  "bin":  "src/cli.js",
+  "bin": "src/cli.js",
   "devDependencies": {
     "babel": "^5.1.9",
+    "jasmine": "^2.3.1",
     "should": "^6.0.1"
   }
 }
