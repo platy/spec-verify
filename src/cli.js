@@ -1,3 +1,5 @@
+#!/usr/bin/env babel-node --stage 0 --
+
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 import TextCoverageChecker from './coverage/text-coverage.js'
@@ -12,14 +14,26 @@ colors.setTheme({
     covered: 'green'
 });
 
-var helpText = `Usage: spec-test <command> [options]
+var yargs = require('yargs')
+    .usage('Usage: $0 <command> ...')
+    .command('coverage', 'Check the spec coverage of an assertion file', function(yargs) {
+        yargs
+            .usage('Usage: $0 coverage <assertion file>')
+            .demand(2, "Assertion file required to check coverage")
+            .help('help')
+    })
+    .command('verify', 'Run assertions against a fixture', function(yargs) {
+        yargs
+            .usage('Usage: $0 verify <fixture> [fixture args], <assertion file>')
+            .demand(3)
+            .help('help')
+    })
+    .help('help')
+    .demand(1);
+var argv = yargs
+    .argv;
 
-Commands:
-- help
-- coverage <assertion file>
-- web-get <url> <assertion file>`;
-
-var cmd = process.argv[2];
+var cmd = argv._[0];
 
 function printCoverageMarkedSpec(markedDoc) {
     var spec = '';
@@ -35,7 +49,7 @@ function printCoverageMarkedSpec(markedDoc) {
 }
 
 if(cmd === 'coverage'){
-    let assertionsFile = process.argv[3];
+    let assertionsFile = argv._[1];
     load(assertionsFile, function (as, specFile) {
         fs.readFile(specFile, (err, spec) => {
             if (err) throw err;
@@ -56,20 +70,22 @@ if(cmd === 'coverage'){
             console.log(`Coverage: ${result.coveragePercent} %`);
         })
     })
-} else if (cmd === 'web-get') {
-    WebGet(process.argv[3], function(fixture){
-        let assertionsFile = process.argv[4];
-        load(assertionsFile, function (as) {
-            var result = run(as, fixture);
-            result.root.forEach(result => printResult(result));
-            console.log(result.summary);
+} else if (cmd === 'verify') {
+    if (argv._[1] === 'web-get') {
+        WebGet(argv._[2], function (fixture) {
+            let assertionsFile = argv._[3];
+            load(assertionsFile, function (as) {
+                var result = run(as, fixture);
+                result.root.forEach(result => printResult(result));
+                console.log(result.summary);
+            });
         });
-    });
-} else if (cmd === "help") {
-    console.log(helpText)
+    } else {
+        console.log(`Unknown fixture ${web-get}`)
+    }
 } else {
     console.log(`Unknown command ${cmd}
-    ${helpText}`);
+    ${yargs.help()}`);
 }
 
 function printFailure(failure, depth = 0) {
