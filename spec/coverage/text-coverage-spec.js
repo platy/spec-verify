@@ -1,6 +1,6 @@
 var should = require("should");
 
-var CoverageChecker = require('../../es5/coverage/text-coverage.js');
+var CoverageChecker = require('../../es5/coverage/text-highlighter.js');
 
 describe('Coverage of no assertions', function(){
     var spec = "hello world!";
@@ -13,7 +13,7 @@ describe('Coverage of no assertions', function(){
     });
     it('should have an unmatched marked document', function(){
         result.should.have.property('marked').with.property(0).with.properties({
-            'covered': false,
+            "highlight": false,
             'text': spec});
     })
 });
@@ -37,11 +37,11 @@ describe('Coverage of 1 assertion', function(){
         result.should.have.property('marked');
         var marked = result.marked;
         marked.should.have.property(0).with.properties({
-            'covered': true,
+            highlight: "covered",
             'text': 'hello'
         });
         marked.should.have.property(1).with.properties({
-            covered: false,
+            highlight: false,
             text: 'world'
         });
     });

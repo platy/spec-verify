@@ -2,7 +2,7 @@
 
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
-import TextCoverageChecker from './coverage/text-coverage.js'
+import TextCoverageHighlighter from './coverage/text-highlighter.js'
 import * as WebGet from './fixture/web-get.js'
 var colors = require('colors');
 var fs = require('fs');
@@ -46,7 +46,7 @@ function printCoverageMarkedSpec(markedDoc) {
     var spec = '';
     for(var i in markedDoc) {
         var part = markedDoc[i];
-        if(part.covered)
+        if(part.highlight)
             spec = spec + part.text.covered;
         else
             spec = spec + part.text;
@@ -67,7 +67,7 @@ if(cmd === 'coverage'){
                     allAssertions.push(...rootAssertion.cases);
             });
 
-            var result = TextCoverageChecker(allAssertions, spec.toString());
+            var result = TextCoverageHighlighter(allAssertions, spec.toString());
             printCoverageMarkedSpec(result.marked);
             console.log(`${result.unmatched.length} Unmatched assertions out of ${allAssertions.length} : `);
             result.unmatched.forEach(ua => {

@@ -1,7 +1,7 @@
 //TODO: score coverage based on keywords
 //TODO: highlight keywords which are not covered
 
-class TextCoverageResult {
+class TextHighlighted {
     constructor(markers, body){
         this.markers = markers;
         this.body = body;
@@ -11,15 +11,15 @@ class TextCoverageResult {
         var pos = 0, covered = 0;
         for(var marker of this.allOrderedMarkers) {
             if (marker.start > pos) {
-                marked.push({covered: false, text: this.body.substr(pos, marker.start - pos)});
+                marked.push({highlight: false, text: this.body.substr(pos, marker.start - pos)});
                 pos = marker.start; // skip any gap
             }if (marker.end > pos) {
-                marked.push({covered: true, text: this.body.substr(pos, marker.end - pos)});
+                marked.push({highlight: marker.highlight, text: this.body.substr(pos, marker.end - pos)});
                 covered = covered + marker.end - pos;
                 pos = marker.end;
             }
         }
-        marked.push({covered: false, text: this.body.substr(pos, this.body.length - pos)});
+        marked.push({highlight: false, text: this.body.substr(pos, this.body.length - pos)});
         return marked;
     }
     get unmatched() {
@@ -59,7 +59,7 @@ function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
-function findAll(substring, string) {
+function findAll(substring, string, highlight) {
     var matcher = new RegExp(escapeRegExp(substring).replace(/\s+/g, "\\s+"), 'g');
     var ms = [];
     var start = -1;
@@ -68,15 +68,20 @@ function findAll(substring, string) {
         if (!result)
             return ms;
         start = result.index;
-        ms.push({start, end: start + result[0].length});
+        ms.push({start, end: start + result[0].length, highlight});
     }
 }
 
-export default function(assertions, spec) {
-    var markers = assertions.map(assertion => {
-        var markers = findAll(assertion.description, spec);
-        markers.assertion = assertion;
+export default function(excerpts, spec) {
+    var markers = excerpts.map(excerpt => {
+        var highlight;
+        if (excerpt.highlight)
+            highlight = excerpt.highlight;
+        else
+            highlight = 'covered';
+        var markers = findAll(excerpt.description, spec, highlight);
+        markers.assertion = excerpt;
         return markers;
     });
-    return new TextCoverageResult(markers, spec);
+    return new TextHighlighted(markers, spec);
 }
