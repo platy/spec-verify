@@ -6,7 +6,7 @@
 
 var http = require('http-request');
 
-export default function(url, callback) {
+export function load([url], callback) {
     http.get(url, function(err, res) {
         if (err) {
             console.error(err);
@@ -15,3 +15,5 @@ export default function(url, callback) {
         callback(['document', JSON.parse(res.buffer.toString('utf-8'))]);
     });
 }
+
+export var key = 'web-get';

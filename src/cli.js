@@ -3,9 +3,10 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 import TextCoverageChecker from './coverage/text-coverage.js'
-import WebGet from './fixture/web-get.js'
+import * as WebGet from './fixture/web-get.js'
 var colors = require('colors');
 var fs = require('fs');
+var fixtures = [WebGet];
 
 colors.setTheme({
     passed: 'green',
@@ -71,9 +72,10 @@ if(cmd === 'coverage'){
         })
     })
 } else if (cmd === 'verify') {
-    var fixture = argv._[2];
-    if (fixture === 'web-get') {
-        WebGet(argv._[3], function (fixture) {
+    var fixtureName = argv._[2];
+    var fixture = fixtures.find((f) => f.key === fixtureName);
+    if (fixture) {
+        fixture.load(argv._.slice(3), function (fixture) {
             let assertionsFile = argv._[1];
             load(assertionsFile, function (as) {
                 var result = run(as, fixture);
@@ -82,7 +84,7 @@ if(cmd === 'coverage'){
             });
         });
     } else {
-        console.log(`Unknown fixture ${fixture}`)
+        console.log(`Unknown fixture ${fixtureName}`)
     }
 } else {
     console.log(`Unknown command ${cmd}
