@@ -12,6 +12,13 @@ colors.setTheme({
     covered: 'green'
 });
 
+var helpText = `Usage: spec-test <command> [options]
+
+Commands:
+- help
+- coverage <assertion file>
+- web-get <url> <assertion file>`;
+
 var cmd = process.argv[2];
 
 function printCoverageMarkedSpec(markedDoc) {
@@ -27,15 +34,7 @@ function printCoverageMarkedSpec(markedDoc) {
     console.log(spec);
 }
 
-if(cmd === 'try') {
-    let assertionsFile = process.argv[3];
-    load(assertionsFile, function (as) {
-        //var result = run(as, ['document', { data: [{type: "thing"}, {type: "thing"}], meta: {}, links: {} }]);
-        var result = run(as, ['document', { data: {type: "thing"}, meta: {}, links: {} }]);
-        result.root.forEach(result => printResult(result));
-        console.log(result.summary);
-    });
-} else if(cmd === 'coverage'){
+if(cmd === 'coverage'){
     let assertionsFile = process.argv[3];
     load(assertionsFile, function (as, specFile) {
         fs.readFile(specFile, (err, spec) => {
@@ -54,7 +53,7 @@ if(cmd === 'try') {
             result.unmatched.forEach(ua => {
                 console.log(ua.description);
             });
-            console.log(`Coverage: ${result.coveragePercent}`);
+            console.log(`Coverage: ${result.coveragePercent} %`);
         })
     })
 } else if (cmd === 'web-get') {
@@ -66,8 +65,11 @@ if(cmd === 'try') {
             console.log(result.summary);
         });
     });
+} else if (cmd === "help") {
+    console.log(helpText)
 } else {
-    console.log(`Unknown command ${cmd}`);
+    console.log(`Unknown command ${cmd}
+    ${helpText}`);
 }
 
 function printFailure(failure, depth = 0) {
