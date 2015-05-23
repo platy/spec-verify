@@ -1,4 +1,5 @@
 # SpecVerify
+[![Build Status](https://travis-ci.org/platy/spec-verify.svg?branch=master)](https://travis-ci.org/platy/spec-verify)
 
 ## Test-entity stack
 
