@@ -24,7 +24,7 @@ var yargs = require('yargs')
     })
     .command('verify', 'Run assertions against a fixture', function(yargs) {
         yargs
-            .usage('Usage: $0 verify <fixture> [fixture args], <assertion file>')
+            .usage('Usage: $0 verify <assertion file> <fixture> [fixture args ...]')
             .demand(3)
             .help('help')
     })
@@ -71,9 +71,10 @@ if(cmd === 'coverage'){
         })
     })
 } else if (cmd === 'verify') {
-    if (argv._[1] === 'web-get') {
-        WebGet(argv._[2], function (fixture) {
-            let assertionsFile = argv._[3];
+    var fixture = argv._[2];
+    if (fixture === 'web-get') {
+        WebGet(argv._[3], function (fixture) {
+            let assertionsFile = argv._[1];
             load(assertionsFile, function (as) {
                 var result = run(as, fixture);
                 result.root.forEach(result => printResult(result));
@@ -81,7 +82,7 @@ if(cmd === 'coverage'){
             });
         });
     } else {
-        console.log(`Unknown fixture ${web-get}`)
+        console.log(`Unknown fixture ${fixture}`)
     }
 } else {
     console.log(`Unknown command ${cmd}
