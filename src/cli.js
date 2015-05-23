@@ -46,7 +46,6 @@ function printCoverageMarkedSpec(markedDoc) {
     var spec = '';
     for(var i in markedDoc) {
         var part = markedDoc[i];
-        console.log(part);
         if(part.covered)
             spec = spec + part.text.covered;
         else
