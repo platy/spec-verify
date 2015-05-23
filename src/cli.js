@@ -46,8 +46,10 @@ function printCoverageMarkedSpec(markedDoc) {
     var spec = '';
     for(var i in markedDoc) {
         var part = markedDoc[i];
-        if(part.highlight)
+        if(part.highlight === true)
             spec = spec + part.text.covered;
+        else if (part.highlight)
+            spec = spec + part.text[part.highlight];
         else
             spec = spec + part.text;
     }
@@ -82,7 +84,7 @@ if(cmd === 'coverage'){
     if (fixture) {
         fixture.load(argv._.slice(3), function (fixture) {
             let assertionsFile = argv._[1];
-            load(assertionsFile, function (as) {
+            load(assertionsFile, function (as, specFile) {
                 var result = run(as, fixture);
                 if (argv['format'] === 'assertions') {
                     result.root.forEach(result => printResult(result));
@@ -90,6 +92,22 @@ if(cmd === 'coverage'){
                 } else if (argv['format'] === 'failures') {
                     result.failingChildren.forEach(result => printResult(result));
                     console.log(result.summary);
+                } else if (argv['format'] === 'context') {
+                    var results = result.root.map(r => {
+                        if (r.passed)
+                            r.highlight = 'passed';
+                        else
+                            r.highlight = 'childFailure';
+                        console.log(r.highlight);
+                        return r;
+                    });
+                    fs.readFile(specFile, (err, spec) => {
+                        if (err) throw err;
+
+                        var highlighting = TextCoverageHighlighter(results, spec.toString()).marked;
+                        printCoverageMarkedSpec(highlighting);
+                        console.log(result.summary);
+                    });
                 } else {
                     console.error("unknown format : " + argv['format']);
                 }
