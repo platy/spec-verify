@@ -20,13 +20,19 @@ var yargs = require('yargs')
     .command('coverage', 'Check the spec coverage of an assertion file', function(yargs) {
         yargs
             .usage('Usage: $0 coverage <assertion file>')
-            .demand(2, "Assertion file required to check coverage")
+            .demand(2, "Arguments required: coverage requires assertion file")
             .help('help')
     })
     .command('verify', 'Run assertions against a fixture', function(yargs) {
         yargs
             .usage('Usage: $0 verify <assertion file> <fixture> [fixture args ...]')
-            .demand(3)
+            .demand(3, "Arguments required: verify requires assertion file and fixture to run verifications")
+            .option('f', {
+                alias: 'format',
+                default: 'assertions',
+                describe: 'report format for result of verification {assertions/failures/context}',
+                type: 'string'
+            })
             .help('help')
     })
     .help('help')
@@ -79,8 +85,15 @@ if(cmd === 'coverage'){
             let assertionsFile = argv._[1];
             load(assertionsFile, function (as) {
                 var result = run(as, fixture);
-                result.root.forEach(result => printResult(result));
-                console.log(result.summary);
+                if (argv['format'] === 'assertions') {
+                    result.root.forEach(result => printResult(result));
+                    console.log(result.summary);
+                } else if (argv['format'] === 'failures') {
+                    result.failingChildren.forEach(result => printResult(result));
+                    console.log(result.summary);
+                } else {
+                    console.error("unknown format : " + argv['format']);
+                }
             });
         });
     } else {

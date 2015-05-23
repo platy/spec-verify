@@ -127,7 +127,6 @@ export function run(assertions, initialEntity) {
 
     function evaluate(stack) {
         var res = [];
-        console.log(`Running ${assertions.length} assertions`);
         assertions.forEach(a => {
             var assertionRes = evaluateAssertionForStack(a, stack);
             if (assertionRes)
@@ -160,13 +159,11 @@ export function run(assertions, initialEntity) {
                 var providedChildren = [];
                 var bodyThis = {
                     provides(argName, argValue) {
-                        console.log(`${argName} provided`);
                         var results = evaluate(stack.cons(argName, argValue));
                         providedChildren.push({argName, argValue, results});
                     },
                     providesAtLeastOne(...args) {
                         var optionalProvisions = args.map(([argName, argValue]) => {
-                            console.log(`${argName} optionally provided`);
                             var results = evaluate(stack.cons(argName, argValue));
                             return {argName, argValue, results};
                         });
