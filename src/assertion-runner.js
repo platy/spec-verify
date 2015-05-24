@@ -33,8 +33,17 @@ class SuccessResultNode {
     get passed() {
         return this.thisPassed && this.failingChildren.length === 0;
     }
+    get selfFailure() {
+        return !this.thisPassed;
+    }
+    get childFailure() {
+        return this.thisPassed && this.failingChildren.length > 0;
+    }
     get failureError() {
         return `${this.passingChildren.length}/${this.providedChildResults.length} children passed, should be all.`
+    }
+    get flattenChildren() {
+        return this.allChildren.concat(this.allChildren.map(result => result.flattenChildren).reduce((a, b) => a.concat(b), []))
     }
     toString() {
         return `SuccessResultNode with ${this.passingChildren.length}/${this.providedChildResults.length} children passed\n${this.description}`
@@ -50,6 +59,15 @@ class FailureResultNode {
     }
     get description() {
         return this.assertion.description;
+    }
+    get flattenChildren() {
+        return [];
+    }
+    get selfFailure() {
+        return !this.thisPassed;
+    }
+    get childFailure() {
+        return this.thisPassed && this.failingChildren.length > 0;
     }
 }
 
@@ -76,8 +94,17 @@ class CaseResultNode {
     get passed() {
         return this.passingChildren.length === 1;
     }
+    get selfFailure() {
+        return !this.thisPassed;
+    }
+    get childFailure() {
+        return this.thisPassed && this.failingChildren.length > 0;
+    }
     get failureError() {
         return `${this.passingChildren.length}/${this.caseResults.length} cases passed, should be one.`
+    }
+    get flattenChildren() {
+        return this.allChildren.concat(this.allChildren.map(result => result.flattenChildren).reduce((a, b) => a.concat(b), []))
     }
 }
 
@@ -106,6 +133,9 @@ class ResultRoot {
         else {
             return `${this.passingChildren.length} assertions passed, but ${this.failingChildren.length} failed`;
         }
+    }
+    get flattenChildren() {
+        return this.allChildren.concat(this.allChildren.map(result => result.flattenChildren).reduce((a, b) => a.concat(b), []))
     }
 }
 

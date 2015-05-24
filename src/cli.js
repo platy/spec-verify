@@ -15,6 +15,20 @@ colors.setTheme({
     covered: 'green'
 });
 
+Array.prototype.groupBy = function(equalityFn) {
+    let groups = new Map();
+    this.forEach(entry => {
+        let entryKey = equalityFn(entry);
+        var group = groups.get(entryKey);
+        if(group)
+            group.push(entry);
+        else
+            group = [entry];
+        groups.set(entryKey, group);
+    });
+    return [...groups.values()]
+};
+
 var yargs = require('yargs')
     .usage('Usage: $0 <command> ...')
     .command('coverage', 'Check the spec coverage of an assertion file', function(yargs) {
@@ -42,7 +56,7 @@ var argv = yargs
 
 var cmd = argv._[0];
 
-function printCoverageMarkedSpec(markedDoc) {
+function printHighlightedSpec(markedDoc) {
     var spec = '';
     for(var i in markedDoc) {
         var part = markedDoc[i];
@@ -70,7 +84,7 @@ if(cmd === 'coverage'){
             });
 
             var result = TextCoverageHighlighter(allAssertions, spec.toString());
-            printCoverageMarkedSpec(result.marked);
+            printHighlightedSpec(result.marked);
             console.log(`${result.unmatched.length} Unmatched assertions out of ${allAssertions.length} : `);
             result.unmatched.forEach(ua => {
                 console.log(ua.description);
@@ -93,19 +107,28 @@ if(cmd === 'coverage'){
                     result.failingChildren.forEach(result => printResult(result));
                     console.log(result.summary);
                 } else if (argv['format'] === 'context') {
-                    var results = result.root.map(r => {
-                        if (r.passed)
-                            r.highlight = 'passed';
+                    var results = result.flattenChildren.groupBy(r => r.description).map(rs => {
+                        if (rs.find(r => r.selfFailure))
+                            return {
+                                description: rs[0].description,
+                                highlight: 'selfFailure'
+                            };
+                        else if (rs.find(r => r.childFailure))
+                            return {
+                                description: rs[0].description,
+                                highlight: 'childFailure'
+                            };
                         else
-                            r.highlight = 'childFailure';
-                        console.log(r.highlight);
-                        return r;
+                            return {
+                                description: rs[0].description,
+                                highlight: 'passed'
+                            };
                     });
                     fs.readFile(specFile, (err, spec) => {
                         if (err) throw err;
 
                         var highlighting = TextCoverageHighlighter(results, spec.toString()).marked;
-                        printCoverageMarkedSpec(highlighting);
+                        printHighlightedSpec(highlighting);
                         console.log(result.summary);
                     });
                 } else {
