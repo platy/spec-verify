@@ -3,12 +3,12 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 import TextCoverageHighlighter from './coverage/text-highlighter.js'
+import {printHighlightedSpec} from './coverage/console-text-highlight-renderer.js'
 import * as WebGet from './fixture/web-get.js'
-var colors = require('colors');
 var fs = require('fs');
 var fixtures = [WebGet];
 
-colors.setTheme({
+printHighlightedSpec.setTheme({
     passed: 'green',
     childFailure: 'yellow',
     selfFailure: 'red',
@@ -56,20 +56,6 @@ var argv = yargs
 
 var cmd = argv._[0];
 
-function printHighlightedSpec(markedDoc) {
-    var spec = '';
-    for(var i in markedDoc) {
-        var part = markedDoc[i];
-        if(part.highlight === true)
-            spec = spec + part.text.covered;
-        else if (part.highlight)
-            spec = spec + part.text[part.highlight];
-        else
-            spec = spec + part.text;
-    }
-    console.log(spec);
-}
-
 if(cmd === 'coverage'){
     let assertionsFile = argv._[1];
     load(assertionsFile, function (as, specFile) {
@@ -85,11 +71,11 @@ if(cmd === 'coverage'){
 
             var result = TextCoverageHighlighter(allAssertions, spec.toString());
             printHighlightedSpec(result.marked);
-            console.log(`${result.unmatched.length} Unmatched assertions out of ${allAssertions.length} : `);
+            console.error(`${result.unmatched.length} Unmatched assertions out of ${allAssertions.length} : `);
             result.unmatched.forEach(ua => {
-                console.log(ua.description);
+                console.error(ua.description);
             });
-            console.log(`Coverage: ${result.coveragePercent} %`);
+            console.error(`Coverage: ${result.coveragePercent} %`);
         })
     })
 } else if (cmd === 'verify') {
