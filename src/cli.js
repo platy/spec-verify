@@ -3,17 +3,9 @@
 import {load} from './assertion-loader';
 import {run} from './assertion-runner';
 import TextCoverageHighlighter from './coverage/text-highlighter.js'
-import {printHighlightedSpec} from './coverage/console-text-highlight-renderer.js'
 import * as WebGet from './fixture/web-get.js'
 var fs = require('fs');
 var fixtures = [WebGet];
-
-printHighlightedSpec.setTheme({
-    passed: 'green',
-    childFailure: 'yellow',
-    selfFailure: 'red',
-    covered: 'green'
-});
 
 Array.prototype.groupBy = function(equalityFn) {
     let groups = new Map();
@@ -35,14 +27,19 @@ var yargs = require('yargs')
         yargs
             .usage('Usage: $0 coverage <assertion file>')
             .demand(2, "Arguments required: coverage requires assertion file")
+            .option('f', {
+                alias: 'report-format',
+                describe: '',
+                type: 'string'
+            })
             .help('help')
     })
     .command('verify', 'Run assertions against a fixture', function(yargs) {
         yargs
             .usage('Usage: $0 verify <assertion file> <fixture> [fixture args ...]')
             .demand(3, "Arguments required: verify requires assertion file and fixture to run verifications")
-            .option('f', {
-                alias: 'format',
+            .option('r', {
+                alias: 'report-type',
                 default: 'assertions',
                 describe: 'report format for result of verification {assertions/failures/context}',
                 type: 'string'
@@ -53,6 +50,19 @@ var yargs = require('yargs')
     .demand(1);
 var argv = yargs
     .argv;
+
+var printHighlightedSpec;
+if (argv['report-format'] === 'html')
+    printHighlightedSpec = require('./coverage/html-markdown-highlight-renderer.js').printHighlightedSpec;
+else
+    printHighlightedSpec = require('./coverage/console-text-highlight-renderer.js').printHighlightedSpec;
+
+printHighlightedSpec.setTheme({
+    passed: 'green',
+    childFailure: 'yellow',
+    selfFailure: 'red',
+    covered: 'green'
+});
 
 var cmd = argv._[0];
 

@@ -8,7 +8,7 @@ import {contextGenerator} from './assertion-context';
 
 
 export function load(filepath, callback) {
-    console.log("Loading: ", filepath);
+    console.error("Loading: ", filepath);
     var assertionContext = contextGenerator();
     var spectestApi = vm.createContext(assertionContext.context);
 

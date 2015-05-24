@@ -8,6 +8,7 @@
   "dependencies": {
     "colors": "^1.0.3",
     "http-request": "^0.7.0",
+    "marked": "^0.3.3",
     "yargs": "^3.9.1"
   },
   "bin": "src/cli.js",
