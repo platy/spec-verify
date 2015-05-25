@@ -1,4 +1,4 @@
-#!/usr/bin/env node_modules/.bin/babel-node --stage 0 --
+#!/usr/bin/env node_modules/.bin/babel-node --
 
 import {load} from './assertion-loader';
 import {run} from '../assertion-runner';
@@ -41,7 +41,7 @@ var yargs = require('yargs')
             .option('r', {
                 alias: 'report-type',
                 default: 'assertions',
-                describe: 'report format for result of verification {assertions/failures/context}',
+                describe: 'report type for result of verification {assertions/failures/context}',
                 type: 'string'
             })
             .help('help')
@@ -96,13 +96,14 @@ if(cmd === 'coverage'){
             let assertionsFile = argv._[1];
             load(assertionsFile, function (as, specFile) {
                 var result = run(as, fixture);
-                if (argv['format'] === 'assertions') {
+                var reportType = argv['report-type'];
+                if (reportType === 'assertions') {
                     result.root.forEach(result => printResult(result));
                     console.log(result.summary);
-                } else if (argv['format'] === 'failures') {
+                } else if (reportType === 'failures') {
                     result.failingChildren.forEach(result => printResult(result));
                     console.log(result.summary);
-                } else if (argv['format'] === 'context') {
+                } else if (reportType === 'context') {
                     var results = result.flattenChildren.groupBy(r => r.description).map(rs => {
                         if (rs.find(r => r.selfFailure))
                             return {
@@ -128,7 +129,7 @@ if(cmd === 'coverage'){
                         console.log(result.summary);
                     });
                 } else {
-                    console.error("unknown format : " + argv['format']);
+                    console.error("unknown type : " + reportType);
                 }
             });
         });
