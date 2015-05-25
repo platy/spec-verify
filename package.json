@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js"
+    "test": "rm -r es5/* && node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js"
   },
   "dependencies": {
     "colors": "^1.0.3",

@@ -1,4 +1,4 @@
-var load = require('../../es5/assertion-loader.js').load;
+var load = require('../../es5/node/assertion-loader.js').load;
 var run = require('../../es5/assertion-runner.js').run;
 require('should');
 
