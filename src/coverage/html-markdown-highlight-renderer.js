@@ -4,6 +4,10 @@ var theme;
 
 // markedDoc is an ordered list of parts of the markdown document, each element has text and highlight (string / boolean)
 export function printHighlightedSpec(markedDoc) {
+    console.log(highlightedSpec(markedDoc));
+}
+
+export function highlightedSpec(markedDoc) {
     var spec = '';
     for(var i in markedDoc) {
         if (markedDoc.hasOwnProperty(i)) {
@@ -17,8 +21,7 @@ export function printHighlightedSpec(markedDoc) {
                 spec = spec + partHtml;
         }
     }
-    console.log(themeCss());
-    console.log(spec);
+    return themeCss() + '\n' + spec;
 }
 
 function themeCss() {
@@ -28,5 +31,9 @@ function themeCss() {
 }
 
 printHighlightedSpec.setTheme = function (colorTheme) {
+    theme = colorTheme;
+};
+
+highlightedSpec.setTheme = function (colorTheme) {
     theme = colorTheme;
 };

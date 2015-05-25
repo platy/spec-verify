@@ -1,0 +1,29 @@
+<html>
+<body>
+
+<script src="../../dist/spec-verify-browser.js">
+</script>
+<script>
+  SpecVerify.loadAssertionContext();
+</script>
+<script src="./assertions.js">
+</script>
+<script>
+  var allAssertions = SpecVerify.flattenAssertions(rootAssertions);
+
+  console.log(spec);
+  var specReq = new XMLHttpRequest();
+  specReq.onload = function() {
+    var result = SpecVerify.TextCoverageHighlighter(allAssertions, this.responseText);
+    document.write(SpecVerify.highlightedMarkdownToHtml(result.marked));
+    console.log(result.unmatched.length + ' Unmatched assertions out of ' + allAssertions.length + ' : ');
+    result.unmatched.forEach(function (ua) {
+      console.log(ua.description);
+    });
+    console.log('Coverage: ' + result.coveragePercent + ' %');
+  };
+  specReq.open('get', spec, true);
+  specReq.send();
+</script>
+</body>
+</html>

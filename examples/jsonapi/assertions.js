@@ -3,8 +3,6 @@
 // Main entry point : document - a json document
 spec = './spec.md';
 
-require('should');
-
 assertion("A JSON object **MUST** be at the root of every JSON API response containing data.", function(document){
     document.should.be.type('object').and.not.an.Array;
 });

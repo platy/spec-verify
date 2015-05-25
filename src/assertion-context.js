@@ -29,6 +29,15 @@ function functionParameters(body) {
     return str.substr(len+1,str.indexOf(")")-len -1).replace(/ /g,"").split(',')
 }
 
+export function attachAssertionContextToGlobal() {
+    global.rootAssertions = [];
+    global.assertion = function(description, body) {
+        var a = new Assertion(description, body);
+        global.rootAssertions.push(a);
+        return a;
+    }
+}
+
 export function contextGenerator() {
     var context = {
         rootAssertions: [],
