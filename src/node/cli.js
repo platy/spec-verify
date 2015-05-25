@@ -1,9 +1,9 @@
 #!/usr/bin/env node_modules/.bin/babel-node --stage 0 --
 
 import {load} from './assertion-loader';
-import {run} from './assertion-runner';
-import TextCoverageHighlighter from './coverage/text-highlighter.js'
-import * as WebGet from './fixture/web-get.js'
+import {run} from '../assertion-runner';
+import TextCoverageHighlighter from '../coverage/text-highlighter.js'
+import * as WebGet from '../fixture/node-web-get.js'
 var fs = require('fs');
 var fixtures = [WebGet];
 
@@ -53,9 +53,9 @@ var argv = yargs
 
 var printHighlightedSpec;
 if (argv['report-format'] === 'html')
-    printHighlightedSpec = require('./coverage/html-markdown-highlight-renderer.js').printHighlightedSpec;
+    printHighlightedSpec = require('./../coverage/html-markdown-highlight-renderer.js').printHighlightedSpec;
 else
-    printHighlightedSpec = require('./coverage/console-text-highlight-renderer.js').printHighlightedSpec;
+    printHighlightedSpec = require('./../coverage/console-text-highlight-renderer.js').printHighlightedSpec;
 
 printHighlightedSpec.setTheme({
     passed: 'green',

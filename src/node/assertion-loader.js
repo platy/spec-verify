@@ -4,7 +4,7 @@ Does node-side loading of assertion files
 var fs = require('fs'),
     vm = require('vm'),
     url = require('url');
-import {contextGenerator} from './assertion-context';
+import {contextGenerator} from '../assertion-context';
 
 
 export function load(filepath, callback) {
