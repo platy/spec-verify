@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "cleantest": "rm -r es5/*",
-    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js"
+    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js",
+    "browserdist": "browserify src/browser/index.js -t babelify --outfile dist/spec-verify-browser.js"
   },
   "dependencies": {
     "colors": "^1.0.3",
