@@ -1,0 +1,1 @@
+CLI option to write a html highlighted spec instead of outputting to console

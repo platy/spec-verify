@@ -1,0 +1,1 @@
+result options should be available to show only failures or show the results in the context of the spec

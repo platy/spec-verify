@@ -1,0 +1,1 @@
+I don't think they will be able to share any code, but other fixtures probably will.

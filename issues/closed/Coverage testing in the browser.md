@@ -1,0 +1,1 @@
+Browser entry point to run and show coverage for spec.
