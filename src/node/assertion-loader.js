@@ -3,19 +3,19 @@ Does node-side loading of assertion files
  */
 var fs = require('fs'),
     vm = require('vm'),
-    url = require('url');
-import {contextGenerator} from '../assertion-context';
+    url = require('url'),
+    System = require('es6-module-loader').System;
 
+System.paths['assertion-context'] = 'src/assertion-context.js';
+System.paths['should'] = 'node_modules/should/should.js';
 
 export function load(filepath, callback) {
     console.error("Loading: ", filepath);
-    var assertionContext = contextGenerator();
-    var spectestApi = vm.createContext(assertionContext.context);
 
-    fs.readFile(filepath, (err, data) => {
-        if (err) throw err;
-        vm.runInContext("require('should');" + data, spectestApi, {filename: filepath, showErrors: true});
-        var specPath = url.resolve(filepath, assertionContext.context.spec);
-        callback(assertionContext.rootAssertions, specPath);
+    // remove js to get the module name
+    filepath = filepath.replace(/(.*)\.js$/, "$1");
+    System.import(filepath).then(function(module) {
+        var specPath = url.resolve(filepath, module.spec);
+        callback(module.rootAssertions, specPath);
     });
 }

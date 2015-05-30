@@ -1,7 +1,10 @@
-// TODO: should be able to use some es6 with io.js
-
 // Main entry point : document - a json document
-spec = './spec.md';
+import {AssertionContext} from 'assertion-context'
+import should from 'should';
+var context = new AssertionContext();
+var assertion = context.assertion;
+export var spec = './spec.md';
+export var rootAssertions = context.rootAssertions;
 
 assertion("A JSON object **MUST** be at the root of every JSON API response containing data.", function(document){
     document.should.be.type('object').and.not.an.Array;

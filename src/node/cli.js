@@ -29,7 +29,8 @@ var yargs = require('yargs')
             .demand(2, "Arguments required: coverage requires assertion file")
             .option('f', {
                 alias: 'report-format',
-                describe: '',
+                default: 'console',
+                describe: 'output format of report {console/html}',
                 type: 'string'
             })
             .help('help')

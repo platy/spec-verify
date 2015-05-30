@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "cleantest": "rm -r es5/*",
-    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js"
+    "test": "node_modules/.bin/babel src --out-dir es5 && node_modules/.bin/jasmine examples/jsonapi/test.js spec/coverage/text-coverage-spec.js",
+    "browserdist": "browserify src/browser/index.js -t babelify --outfile dist/spec-verify-browser.js"
   },
   "dependencies": {
     "colors": "^1.0.3",
+    "es6-module-loader": "^0.16.6",
     "http-request": "^0.7.0",
     "marked": "^0.3.3",
+    "traceur": "0.0.89",
     "yargs": "^3.9.1"
   },
   "bin": "src/node/cli.js",

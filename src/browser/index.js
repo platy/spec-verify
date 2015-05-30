@@ -1,12 +1,9 @@
-import {attachAssertionContextToGlobal} from '../assertion-context.js'
 import TextCoverageHighlighter from '../coverage/text-highlighter.js'
 import {highlightedSpec as highlightedMarkdownToHtml} from '../coverage/html-markdown-highlight-renderer.js'
-require('should');
 
 var SpecVerify = {};
 
 SpecVerify.TextCoverageHighlighter = TextCoverageHighlighter;
-SpecVerify.loadAssertionContext = attachAssertionContextToGlobal;
 
 SpecVerify.flattenAssertions = function(as) {
     var allAssertions = [];

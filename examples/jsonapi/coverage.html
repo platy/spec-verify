@@ -1,29 +1,29 @@
 <html>
 <body>
+<script src="../../node_modules/traceur/bin/traceur.js"></script>
+<script src="../../node_modules/es6-module-loader/dist/es6-module-loader.js"></script>
 
-<script src="../../dist/spec-verify-browser.js">
-</script>
+<script src="../../dist/spec-verify-browser.js"></script>
 <script>
-  SpecVerify.loadAssertionContext();
-</script>
-<script src="./assertions.js">
-</script>
-<script>
-  var allAssertions = SpecVerify.flattenAssertions(rootAssertions);
+  System.paths['assertion-context'] = '/spec-verify/src/assertion-context.js';
+  System.paths['should'] = '/spec-verify/node_modules/should/should.js';
 
-  console.log(spec);
-  var specReq = new XMLHttpRequest();
-  specReq.onload = function() {
-    var result = SpecVerify.TextCoverageHighlighter(allAssertions, this.responseText);
-    document.write(SpecVerify.highlightedMarkdownToHtml(result.marked));
-    console.log(result.unmatched.length + ' Unmatched assertions out of ' + allAssertions.length + ' : ');
-    result.unmatched.forEach(function (ua) {
-      console.log(ua.description);
-    });
-    console.log('Coverage: ' + result.coveragePercent + ' %');
-  };
-  specReq.open('get', spec, true);
-  specReq.send();
+  System.import('./assertions').then(function(module) {
+    var allAssertions = SpecVerify.flattenAssertions(module.rootAssertions);
+
+    var specReq = new XMLHttpRequest();
+    specReq.onload = function() {
+      var result = SpecVerify.TextCoverageHighlighter(allAssertions, this.responseText);
+      document.write(SpecVerify.highlightedMarkdownToHtml(result.marked));
+      console.log(result.unmatched.length + ' Unmatched assertions out of ' + allAssertions.length + ' : ');
+      result.unmatched.forEach(function (ua) {
+        console.log(ua.description);
+      });
+      console.log('Coverage: ' + result.coveragePercent + ' %');
+    };
+    specReq.open('get', module.spec, true);
+    specReq.send();
+  });
 </script>
 </body>
 </html>
