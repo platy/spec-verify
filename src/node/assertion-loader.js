@@ -14,7 +14,11 @@ export function load(filepath, callback) {
 
     fs.readFile(filepath, (err, data) => {
         if (err) throw err;
-        vm.runInContext("require('should');" + data, spectestApi, {filename: filepath, showErrors: true});
+        try {
+            vm.runInContext("require('should');" + data, spectestApi, {filename: filepath, showErrors: true});
+        } catch(e) {
+            throw new Error(e); // run in context doesn't throw errors, just their messages
+        }
         var specPath = url.resolve(filepath, assertionContext.context.spec);
         callback(assertionContext.rootAssertions, specPath);
     });
